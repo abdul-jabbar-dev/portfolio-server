@@ -4,6 +4,9 @@ const cors = require('cors');
 const port = process.env.PORT || 2001;
 const mongodb = require('mongodb')
 const fileUpload = require('express-fileupload')
+const { ObjectID } = require('mongodb')
+
+
 app.use(cors())
 app.use(express.json())
 app.use(fileUpload());
@@ -17,8 +20,6 @@ function base64_encode(file) {
     }
     return file;
 }
-// ;
-
 const uri = "mongodb+srv://devAbdulPortfolio:1532002@cluster0.pdnb4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const client = new mongodb.MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 async function run() {
@@ -31,6 +32,7 @@ async function run() {
             let projects = req.body;
             let files = req.files;
             let image = base64_encode(files)
+            console.log(files)
             for (let key in image) {
                 projects[key] = image[key]
             }
@@ -48,21 +50,21 @@ async function run() {
             res.json(result)
         });
         app.get('/projects', async (req, res) => {
-            // const { items } = req.query
-            // let result;
-            // if (items) {
-            //     result = await projectsCollection.find().sort({ "postDate": -1 }).limit(parseInt(items)).toArray();
-            // } else {
-            let result = await projectsCollection.find({}).toArray();
-            // }
+            const { items } = req.query
+            let result;
+            if (items) {
+                result = await projectsCollection.find().sort({ "postDate": -1 }).limit(parseInt(items)).toArray();
+            } else {
+                let result = await projectsCollection.find({}).toArray();
+            }
             res.json(result)
         });
-        // app.get('/products/:id', async (req, res) => {
-        //     const { id } = req.params
-        //     const quary = { _id: ObjectId(id) }
-        //     const result = await productCollection.findOne(quary)
-        //     res.send(result)
-        // });
+        app.get('/projects/:id', async (req, res) => {
+            const { id } = req.params
+            const quary = { _id: ObjectId(id) }
+            const result = await projectsCollection.findOne(quary)
+            res.send(result)
+        });
         // app.get('/cart/:id', async (req, res) => {
         //     const { id } = req.params
         //     const quary = { _id: ObjectId(id) }
@@ -131,6 +133,7 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
     res.send('Hello Worlds')
 })
+
 app.listen(port, () => {
     console.log(port, 'is running');
 })
