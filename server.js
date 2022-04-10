@@ -1,67 +1,47 @@
-const express = require('express')
-const app = express()
-const cors = require('cors');
-const port = process.env.PORT || 2001;
-const mongodb = require('mongodb')
-const fileUpload = require('express-fileupload')
-const { ObjectID } = require('mongodb')
+const { calls } = require('./server.use');
 
+const { uri, port, client, cloudinary, app, fileUpload, express, mongodb, ObjectID } = calls()
 
-app.use(cors())
-app.use(express.json())
-app.use(fileUpload());
-
-
-function base64_encode(file) {
-    for (let key in file) {
-        let bufData = file[key].data
-        let buffer = Buffer.from(bufData, 'base64')
-        file[key] = buffer
-    }
-    return file;
-}
-const uri = "mongodb+srv://devAbdulPortfolio:1532002@cluster0.pdnb4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-const client = new mongodb.MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 async function run() {
     try {
         await client.connect();
         const database = client.db('portfolio');
         const projectsCollection = database.collection('projects');
+
         //projects collection
         app.post('/projects', async (req, res) => {
-            let projects = req.body;
             let files = req.files;
-            let image = base64_encode(files)
-            console.log(files)
-            for (let key in image) {
-                projects[key] = image[key]
+
+            if (files) {
+                for (let img in files) {
+                    files[img] = (await cloudinary.v2.uploader.upload(files[img].tempFilePath, { folder: 'portfolio/projects' }, (err, res) => res.url)).url
+                    req.body[img] = files[img]
+                }
             }
-            // let imageSting = image
-            // let buffer = Buffer.from(imageSting, 'base64')
-            // projects.siteThumbnail = buffer
-            // const picData = image.siteThumbnail.data;
-            // const encodedPic = picData.toString('base64');
-            // const imageBuffer = Buffer.from(encodedPic, 'base64');
-            // console.log(imageBuffer)
-            // console.log(projects);
-            // console.log('files', [files.files]);
-            // console.log('files2', files2);
-            const result = await projectsCollection.insertOne(projects);
+            req.body.createDate = new Date().toLocaleString()
+            // cloudinary.v2.api.create_folder("projects", function (error, result) { console.log(result); });
+            // cloudinary.v2.api.sub_folders("projects", function (error, result) { console.log(result); });
+            // cloudinary.v2.uploader.upload(files.siteThumbnail.tempFilePath,
+            // console.log(files[x].url = res.secure_url
+            // console.log(files)
+            //     function (error, result,) { console.log(result, error) });
+            const result = await projectsCollection.insertOne(req.body);
             res.json(result)
         });
+
         app.get('/projects', async (req, res) => {
             const { items } = req.query
             let result;
             if (items) {
                 result = await projectsCollection.find().sort({ "postDate": -1 }).limit(parseInt(items)).toArray();
             } else {
-                let result = await projectsCollection.find({}).toArray();
+                result = await projectsCollection.find({}).toArray();
             }
             res.json(result)
         });
         app.get('/projects/:id', async (req, res) => {
             const { id } = req.params
-            const quary = { _id: ObjectId(id) }
+            const quary = { _id: ObjectID(id) }
             const result = await projectsCollection.findOne(quary)
             res.send(result)
         });
