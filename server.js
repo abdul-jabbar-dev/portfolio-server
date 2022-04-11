@@ -1,6 +1,5 @@
 const { calls } = require('./server.use');
-
-const { uri, port, client, cloudinary, app, fileUpload, express, mongodb, ObjectID } = calls()
+const { uri, port, client, cloudinary, app, fileUpload, express, mongodb, ObjectID, fs } = calls()
 
 async function run() {
     try {
@@ -14,7 +13,8 @@ async function run() {
 
             if (files) {
                 for (let img in files) {
-                    files[img] = (await cloudinary.v2.uploader.upload(files[img].tempFilePath, { folder: 'portfolio/projects' }, (err, res) => res.url)).url
+                    files[img] = (await cloudinary.v2.uploader.upload(files[img].tempFilePath, { folder: 'portfolio/projects' }, (err, res) => res?.url)).url
+                    console.log(files[img])
                     req.body[img] = files[img]
                 }
             }
@@ -26,6 +26,7 @@ async function run() {
             // console.log(files)
             //     function (error, result,) { console.log(result, error) });
             const result = await projectsCollection.insertOne(req.body);
+            result && fs.rmdirSync('./tmp', { force: true, recursive: true });
             res.json(result)
         });
 
@@ -45,6 +46,12 @@ async function run() {
             const result = await projectsCollection.findOne(quary)
             res.send(result)
         });
+        app.delete('/projects/:id', async (req, res) => {
+            const id = req.params.id;
+            const quare = { _id: ObjectID(id) }
+            const result = await projectsCollection.deleteOne(quare)
+            res.json(result)
+        })
         // app.get('/cart/:id', async (req, res) => {
         //     const { id } = req.params
         //     const quary = { _id: ObjectId(id) }
@@ -108,7 +115,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
 
 app.get('/', (req, res) => {
     res.send('Hello Worlds')

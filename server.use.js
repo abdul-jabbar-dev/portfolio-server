@@ -8,6 +8,7 @@ module.exports.calls = () => {
     const fileUpload = require('express-fileupload')
     const cloudinary = require('cloudinary')
     const { ObjectID } = require('mongodb')
+    const fs = require('fs')
     app.use(express.json())
     app.use(fileUpload({
         useTempFiles: true,
@@ -21,5 +22,5 @@ module.exports.calls = () => {
     app.use(cors())
     const uri = process.env.MONGODB_CONNECTION_URL;
     const client = new mongodb.MongoClient(uri);
-    return { uri, client, cloudinary, port,app, fileUpload, express, mongodb, ObjectID,}
+    return { uri, client, cloudinary, port, app, fileUpload, express, mongodb, ObjectID, fs }
 }
