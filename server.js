@@ -14,17 +14,10 @@ async function run() {
             if (files) {
                 for (let img in files) {
                     files[img] = (await cloudinary.v2.uploader.upload(files[img].tempFilePath, { folder: 'portfolio/projects' }, (err, res) => res?.url)).url
-                    console.log(files[img])
                     req.body[img] = files[img]
                 }
             }
             req.body.createDate = new Date().toLocaleString()
-            // cloudinary.v2.api.create_folder("projects", function (error, result) { console.log(result); });
-            // cloudinary.v2.api.sub_folders("projects", function (error, result) { console.log(result); });
-            // cloudinary.v2.uploader.upload(files.siteThumbnail.tempFilePath,
-            // console.log(files[x].url = res.secure_url
-            // console.log(files)
-            //     function (error, result,) { console.log(result, error) });
             const result = await projectsCollection.insertOne(req.body);
             result && fs.rmdirSync('./tmp', { force: true, recursive: true });
             res.json(result)
@@ -49,6 +42,10 @@ async function run() {
         app.delete('/projects/:id', async (req, res) => {
             const id = req.params.id;
             const quare = { _id: ObjectID(id) }
+            let find = await projectsCollection.find(quare).toArray();
+            let images = Object.keys(find[0]).filter(key => key.match('siteScreenShort'))
+            images.unshift('siteThumbnail')
+            images.forEach(value => cloudinary.v2.uploader.destroy("portfolio/projects/" + find[0][value].split('/')[9].split('.')[0], (error, result) => console.log(result, error)))
             const result = await projectsCollection.deleteOne(quare)
             res.json(result)
         })
