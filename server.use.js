@@ -8,6 +8,10 @@ module.exports.calls = () => {
     const cloudinary = require('cloudinary')
     const { ObjectID } = require('mongodb')
     const fs = require('fs')
+    const bodyParser = require('body-parser')
+    app.use(bodyParser.urlencoded({ extended: true }))
+    app.use(bodyParser.json())
+
     app.use(express.json())
     app.use(fileUpload({
         useTempFiles: true,

@@ -7,20 +7,20 @@ async function run() {
         const database = client.db('portfolio');
         const projectsCollection = database.collection('projects');
 
-        //projects collection
-        // app.post('/projects', async (req, res) => {
-        //     let files = req.files;
-        //     if (files) {
-        //         for (let img in files) {
-        //             files[img] = (await cloudinary.v2.uploader.upload(files[img].tempFilePath, { folder: 'portfolio/projects' }, (err, res) => res?.url)).url
-        //             req.body[img] = files[img]
-        //         }
-        //     }
-        //     req.body.createDate = new Date().toLocaleString()
-        //     const result = await projectsCollection.insertOne(req.body);
-        //     result && fs.rmdirSync('./tmp', { force: true, recursive: true });
-        //     res.json(result)
-        // });
+        // projects collection
+        app.post('/projects', async (req, res) => {
+            let files = req.files;
+            if (files) {
+                for (let img in files) {
+                    files[img] = (await cloudinary.v2.uploader.upload(files[img].tempFilePath, { folder: 'portfolio/projects' }, (err, res) => res?.url)).url
+                    req.body[img] = files[img]
+                }
+            }
+            req.body.createDate = new Date().toLocaleString()
+            const result = await projectsCollection.insertOne(req.body);
+            result && fs.rmdirSync('./tmp', { force: true, recursive: true });
+            res.json(result)
+        });
 
         app.get('/projects', async (req, res) => {
             const { items } = req.query
@@ -50,34 +50,20 @@ async function run() {
         })
         app.put('/projects/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id)
-            // console.log(req.body);
-            let files = req.body;
-            console.log(files);
-            // if (files) {
-            //     for (let img in files) {
-            //         console.log(img)
-            //         // files[img] = (await cloudinary.v2.uploader.upload(files[img].tempFilePath, { folder: 'portfolio/projects' }, (err, res) => res?.url)).url
-            //         // req.body[img] = files[img]
-            //     }
-            // }
-            // const user = req.body;
-
-
-            // const filter = { _id: ObjectId(id) };
-
-            // const updateDoc = { $set: user };
-            // const result = await projectsCollection.updateOne(filter, updateDoc);
-            // if (result) {
-            //     res.json(result);
-
-            // }
-            // let find = await projectsCollection.find(quare).toArray();
-            // let images = Object.keys(find[0]).filter(key => key.match('siteScreenShort'))
-            // images.unshift('siteThumbnail')
-            // images.forEach(value => cloudinary.v2.uploader.destroy("portfolio/projects/" + find[0][value].split('/')[9].split('.')[0], (error, result) => console.log(result, error)))
-            // const result = await projectsCollection.deleteOne(quare)
-            // res.json(result)
+            let files = req.files;
+            if (files) {
+                for (let img in files) {
+                    files[img] = (await cloudinary.v2.uploader.upload(files[img].tempFilePath, { folder: 'portfolio/projects' }, (err, res) => res?.url)).url
+                    req.body[img] = files[img]
+                }
+            }
+            Object.getOwnPropertyNames(req.body).map(value => value.includes('old') ? cloudinary.v2.uploader.destroy("portfolio/projects/" + req.body[value].split('/')[9]?.split('.')[0], (error, result) => console.log(result)) : ' ');
+            for (let img in req.body) {
+                img.includes('old') && delete req.body[img];
+            }
+            delete req.body._id
+            req.body.lastModified = new Date();
+            const result = await projectsCollection.updateOne({ _id: ObjectID(id) }, { $set: req.body }, { multi: true }).then((res) => console.log(res))
         })
         // app.get('/cart/:id', async (req, res) => {
         //     const { id } = req.params
