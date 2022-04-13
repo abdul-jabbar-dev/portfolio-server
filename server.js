@@ -59,8 +59,8 @@ async function run() {
             }
             Object.getOwnPropertyNames(req.body).map(value => value.includes('old') ? cloudinary.v2.uploader.destroy("portfolio/projects/" + req.body[value].split('/')[9]?.split('.')[0], (error, result) => console.log(result)) : ' ');
             for (let img in req.body) {
-                img.includes('old') && delete req.body[img];
             }
+            result && fs.rmdirSync('./tmp', { force: true, recursive: true });
             delete req.body._id
             req.body.lastModified = new Date();
             const result = await projectsCollection.updateOne({ _id: ObjectID(id) }, { $set: req.body }, { multi: true }).then((res) => console.log(res))
