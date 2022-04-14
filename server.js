@@ -17,9 +17,10 @@ async function run() {
                 }
             }
             req.body.createDate = new Date().toLocaleString()
-            const result = await projectsCollection.insertOne(req.body);
-            result && fs.rmdirSync('./tmp', { force: true, recursive: true });
-            res.json(result)
+            const result = await projectsCollection.insertOne(req.body).then(resu => {
+                resu.acknowledged && fs.rmdirSync('./tmp', { force: true, recursive: true });
+                res.json(resu)
+            })
         });
 
         app.get('/projects', async (req, res) => {
@@ -58,12 +59,10 @@ async function run() {
                 }
             }
             Object.getOwnPropertyNames(req.body).map(value => value.includes('old') ? cloudinary.v2.uploader.destroy("portfolio/projects/" + req.body[value].split('/')[9]?.split('.')[0], (error, result) => console.log(result)) : ' ');
-            for (let img in req.body) {
-            }
-            result && fs.rmdirSync('./tmp', { force: true, recursive: true });
             delete req.body._id
             req.body.lastModified = new Date();
             const result = await projectsCollection.updateOne({ _id: ObjectID(id) }, { $set: req.body }, { multi: true }).then((res) => console.log(res))
+            res.json(result);
         })
         // app.get('/cart/:id', async (req, res) => {
         //     const { id } = req.params
