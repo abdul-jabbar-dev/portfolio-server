@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-module.exports.ProjectSchema = mongoose.Schema({
+const { Schema } = mongoose;
+const ProjectSchema = new Schema({
     websiteName: {
         type: String,
         required: [true, 'please provide a name'],
         trim: true,
-        // unique: true,
     },
     liveLink: {
         type: String,
@@ -28,6 +28,10 @@ module.exports.ProjectSchema = mongoose.Schema({
     },
     siteThumbnail: {
         type: String,
-
+    },
+    createDate: {
+        type: Date,
+        default: Date.now()
     }
 })
+module.exports.ProjectSchema = ProjectSchema

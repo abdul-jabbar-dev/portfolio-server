@@ -14,7 +14,6 @@ module.exports.post_projects = async (req, res) => {
                 req.body[img] = files[img]
             }
         }
-        req.body.createDate = new Date().toLocaleString()
         const result = await projectsCollection.create(req.body).then(resu => {
             resu.acknowledged && fs.rmdirSync('./tmp', { force: true, recursive: true });
             res.json(resu)
@@ -45,7 +44,7 @@ module.exports.get_a_project = async (req, res) => {
 module.exports.delete_a_project = async (req, res) => {
     const id = req.params.id;
     const quare = { _id: ObjectID(id) }
-    let find = await projectsCollection.find(quare).toArray();
+    let find = await projectsCollection.find(quare);
     let images = Object.keys(find[0]).filter(key => key.match('siteScreenShort'))
     images.unshift('siteThumbnail')
     images.forEach(value => cloudinary.v2.uploader.destroy("portfolio/projects/" + find[0][value].split('/')[9].split('.')[0], (error, result) => console.log(result, error)))

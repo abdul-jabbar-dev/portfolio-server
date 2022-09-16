@@ -1,13 +1,27 @@
-const { projectsCollection, client } = require('./Connections/mongodb.client');
 const projectsRouter = require('./Routes/projects.route');
-const  {app}  = require('./middlewares');
+const utilsRouter = require('./Routes/utils.router');
+const { app } = require('./middlewares');
 const port = process.env.PORT || 2001;
 
 async function run() {
     try {
-        // await client.connect()
-
         app.use('/projects', projectsRouter)
+        app.use('/utils', utilsRouter)
+
+    }
+    finally {
+        // await client.close();
+    }
+}
+run().catch(console.dir);
+
+app.get('/', (req, res) => {
+    res.send('Hello Worlds')
+})
+
+app.listen(port, () => {
+    console.log(port, 'is running');
+})
         // projects collection
         // app.post('/projects', async (req, res) => {
         //     let files = req.files;
@@ -92,18 +106,3 @@ async function run() {
         //         }
         //     }
         // })
-
-    }
-    finally {
-        // await client.close();
-    }
-}
-run().catch(console.dir);
-
-app.get('/', (req, res) => {
-    res.send('Hello Worlds')
-})
-
-app.listen(port, () => {
-    console.log(port, 'is running');
-})
