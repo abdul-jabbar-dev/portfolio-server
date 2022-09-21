@@ -32,6 +32,7 @@ const ProjectSchema = new Schema({
     createDate: {
         type: Date,
         default: Date.now()
-    }
+    },
+    views: Number
 })
 module.exports.ProjectSchema = ProjectSchema
