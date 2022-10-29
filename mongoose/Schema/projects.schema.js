@@ -1,9 +1,10 @@
+
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const ProjectSchema = new Schema({
     websiteName: {
         type: String,
-        required: [true, 'please provide a name'],
+        // required: [true, 'please provide a name'],
         trim: true,
     },
     liveLink: {
@@ -29,10 +30,15 @@ const ProjectSchema = new Schema({
     siteThumbnail: {
         type: String,
     },
-    createDate: {
+    createAt: {
         type: Date,
         default: Date.now()
+    }, updateAt: {
+        type: Date,
+
     },
     views: Number
+}, {
+    timestamps: true
 })
 module.exports.ProjectSchema = ProjectSchema
