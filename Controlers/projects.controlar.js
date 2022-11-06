@@ -16,8 +16,7 @@ module.exports.post_projects = async (req, res) => {
         }
 
 
-        const result = await projectsCollection.create(req.body)
-        console.log(result)
+        const result = await projectsCollection.create(req.body) 
         fs.rm('./tmp', { recursive: true }, (resss) => resss)
         res.send(result)
     } catch (error) {

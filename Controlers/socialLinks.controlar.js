@@ -25,8 +25,14 @@ module.exports.delete_socialLinks = async (req, res) => {
 }
 module.exports.update_socialLinks = async (req, res) => {
     try {
-        const send = await socialLinksCollection.updateOne({ _id: req.params.id }, { $set: req.body }, { multi: true })
-        res.send(send)
+        const { id } = req.params
+        if (req.body.update === 'update') {
+            const send = await socialLinksCollection.updateOne({ _id: id }, { url: req.body.url,priority: "active" })
+            res.send(send)
+        } else if (req.body.update === 'deactivate') {
+            const send = await socialLinksCollection.updateOne({ _id: id }, { priority: "deactivate" } )
+            res.send(send)
+        }
     } catch (error) {
         res.send(error)
     }
