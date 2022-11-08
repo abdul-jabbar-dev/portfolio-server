@@ -1,6 +1,6 @@
 
 const mongoose = require('mongoose');
-const { socialLinksSchema: socialLinksSchema } = require('../mongoose/Schema/socialLinks.shema');
+const {  socialLinksSchema } = require('../mongoose/Schema/socialLinks.shema');
 const { ProjectSchema } = require('../mongoose/Schema/projects.schema');
 const { notificationSchema } = require('../mongoose/Schema/notification.shema');
 
@@ -12,9 +12,4 @@ mongoose.connect(uri).then((res) => console.log('db is connetct')).catch(err => 
 module.exports.projectsCollection = mongoose.model('projects', ProjectSchema)
 module.exports.notificationCollection = mongoose.model('notifications', notificationSchema)
 module.exports.socialLinksCollection = mongoose.model('social_links', socialLinksSchema)
-
-// const mongodb = require('mongodb');
-// const client = new mongodb.MongoClient(uri);
-// const database = client.db('portfolio');
-// const projectsCollection = database.collection('projects');
-// module.exports.client = client;
+ 
