@@ -3,8 +3,8 @@ const socialLinksRouter = require('./Routes/socialLinks.router');
 const { app } = require('./middlewares');
 const notificationRouter = require('./Routes/notification.router');
 const port = process.env.PORT || 2001;
-// const cors = require('cors')
-// app.use(cors)
+const cors = require('cors')
+app.use(cors)
 async function run() {
     try {
         app.use('/projects', projectsRouter)
