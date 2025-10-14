@@ -1,0 +1,1 @@
+ALTER TABLE "users" ALTER COLUMN "metadata" SET DATA TYPE text;

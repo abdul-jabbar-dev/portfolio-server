@@ -1,4 +1,12 @@
-import { pgTable, serial, text, integer, timestamp } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  serial,
+  text,
+  integer,
+  timestamp,
+  jsonb,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 
 // Hero Section
 export const heroSection = pgTable("hero_section", {
@@ -19,16 +27,6 @@ export const documents = pgTable("documents", {
   fileUrl: text("file_url").notNull(),
 });
 
-// Tech Stack (Generic)
-export const techStack = pgTable("tech_stack", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  section: text("section").notNull(),
-  desc: text("desc"),
-  url: text("url"),
-  icon: text("icon").notNull(),
-});
-
 // Social Links (Generic)
 export const socialLink = pgTable("social_link", {
   id: serial("id").primaryKey(),
@@ -37,6 +35,40 @@ export const socialLink = pgTable("social_link", {
   desc: text("desc"),
   url: text("url").notNull(),
   icon: text("icon").notNull(),
+  iconStr: text("icon_str"),
+});
+
+// Tech Stack (Generic)
+export const techStack = pgTable("tech_stack", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  section: text("section").notNull(),
+  desc: text("desc"),
+  url: text("url"),
+  icon: text("icon").notNull(),
+  iconStr: text("icon_str"),
+});
+
+// Social Links (Generic)
+export const projects = pgTable("projects", {
+  id: serial("id").primaryKey(),
+  img: text("img").notNull(),
+  title: text("title").notNull().unique(),
+  section: text("section").notNull(),
+  desc: text("desc").notNull(),
+  projectTools: text("project_tools").array().default([]),
+});
+
+// Junction Table: Hero ↔ SocialLink
+export const project_tech_stack = pgTable("project_tech_stack", {
+  id: serial("id").primaryKey(),
+  order: integer("order").notNull(),
+  projectId: integer("project_id")
+    .references(() => projects.id)
+    .notNull(),
+  techId: integer("tech_id")
+    .references(() => techStack.id)
+    .notNull(),
 });
 
 // Junction Table: Hero ↔ SocialLink
@@ -91,9 +123,67 @@ export const experienceSection = pgTable("experience_section", {
 // Contact section
 export const contactSection = pgTable("contact_section", {
   id: serial("id").primaryKey(),
+  iconStr: text("icon_str"),
   icon: text("icon").notNull(),
   title: text("title").notNull().unique(),
   desc: text("desc").notNull(),
   link: text("link"),
   order: integer("order").notNull().unique(),
 });
+// TechnicalSkills section
+export const technicalSkillsSection = pgTable("technical_skills_section", {
+  id: serial("id").primaryKey(),
+  icon: text("icon"),
+  iconStr: text("icon_str"),
+  fieldName: text("field_name").notNull().unique(),
+  desc: text("desc").notNull(),
+  link: text("link"),
+  order: integer("order").notNull().unique(),
+});
+// Junction Table: TechnicalSkills ↔ TechStack
+export const technical_skills_tech_stack = pgTable(
+  "technical_skills_tech_stack",
+  {
+    technicalSkillsFieldId: integer("technical_skills_field_id")
+      .references(() => technicalSkillsSection.id)
+      .notNull(),
+    techStackId: integer("tech_stack_id")
+      .references(() => techStack.id)
+      .notNull(),
+    order: integer("order").notNull(),
+    skillsPercentage: integer("skills_percentage").notNull(),
+  }
+);
+
+// Define possible enum values
+const USER_TYPE = ["me", "notMe"] as const;
+const USER_STATUS = ["active", "blocked"] as const;
+
+export const users = pgTable(
+  "users",
+  {
+    id: serial("id").primaryKey(),
+    type: text("type").notNull(), // enum: "me" | "notMe"
+    email: text("email").notNull(),
+    passwordHash: text("password_hash"),
+    otp: text("otp"),
+    otpExpiresAt: timestamp("otp_expires_at"),
+    name: text("name"),
+    phone: text("phone"),
+    token: text("token"),
+    permissions: text("permissions").array(),
+    metadata: text("metadata"), // files, images, pdf info
+    status: text("status").default("active"), // enum: "active" | "blocked"
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (table) => ({
+    uniqueEmail: uniqueIndex("unique_email").on(table.email),
+    // Conditional checks
+    checkMePassword: `CHECK ((type = 'me' AND password_hash IS NOT NULL) OR type = 'notMe')`,
+    checkNotMeEmail: `CHECK ((type = 'notMe' AND email IS NOT NULL) OR type = 'me')`,
+    checkNotMeNamePhone: `CHECK ((type = 'notMe' AND name IS NOT NULL AND phone IS NOT NULL) OR type = 'me')`,
+    checkTypeEnum: `CHECK (type IN ('${USER_TYPE.join("','")}'))`,
+    checkStatusEnum: `CHECK (status IN ('${USER_STATUS.join("','")}'))`,
+  })
+);

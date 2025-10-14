@@ -1,0 +1,1 @@
+ALTER TABLE "technical_skills_tech_stack" ADD COLUMN "skills_percentage" integer NOT NULL;

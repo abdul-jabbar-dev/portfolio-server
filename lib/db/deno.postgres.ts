@@ -6,6 +6,7 @@ const client = new Client({
   database: "postgres",
   hostname: "aws-1-ap-southeast-1.pooler.supabase.com",
   port: 6543,
+   tls: { enabled: false },
 });
 await client.connect();
 

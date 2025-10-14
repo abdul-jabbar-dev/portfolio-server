@@ -16,5 +16,6 @@
     "drizzle-kit": "npm:drizzle-kit@^0.31.4",
     "drizzle-orm": "npm:drizzle-orm@^0.44.5",
     "pg": "npm:pg@^8.16.3"
+    
   }
 }

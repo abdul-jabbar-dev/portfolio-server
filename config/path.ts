@@ -1,4 +1,4 @@
-export const DATABASE_URL="postgresql://postgres.pyoaowwarxwvraghsvpz:Devabdul39@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres"
+
 const ROOT = "/";
 const GQL = "/gql";
 const path = {
@@ -7,4 +7,14 @@ const path = {
     GQL,
   },
 };
+
+
+export const ENV = {
+  DATABASE_URL: Deno.env.get("DATABASE_URL") || "DATABASE_URL not set",
+  SALT: Deno.env.get("SALT") || "15",
+  JWT_SECRET: Deno.env.get("JWT_SECRET")
+};
+
+export const DATABASE_URL = Deno.env.get("DATABASE_URL")
+
 export default path;

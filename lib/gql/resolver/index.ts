@@ -9,21 +9,30 @@ import { setExperianceSection } from "./mutations/setExperianceSection.ts";
 import { aboutQuery } from './query/about.ts';
 import { experianceQuery } from "./query/experiances.ts";
 import { contactQuery } from "./query/contact.ts";
+import { technicalSkillsQuery } from "./query/technicalSkils.ts";
+import { projectsQuery } from "./query/projects.ts";
+import { footerLinks } from './query/footerLinks.ts';
+import login from "./mutations/login.ts";
+import { me } from "./query/me.ts";
 const resolvers: ResolversProps = {
   Query: {
     hero: heroQuery,
     about: aboutQuery,
     experience: experianceQuery,
     contact: contactQuery,
+    technicalSkills: technicalSkillsQuery,
+    projects: projectsQuery,
+    footerLinks,
+    getMe: me,
   },
-  Mutation: {
+  Mutation: { 
+    login,
     setHeroSection,
     setResume,
     setLinks,
     setTechStack,
     //about section
-    setAboutSection,
-
+    setAboutSection, 
     // experience section
     setExperianceSection,
   },

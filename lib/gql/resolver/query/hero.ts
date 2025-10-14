@@ -27,7 +27,7 @@ export const heroQuery = async () => {
     .select()
     .from(techStack)
     .where(eq(techStack.section, "hero_section"));
-console.log(techStacks)
+
   // 3️⃣ একসাথে merge করে return করো
   return {
     ...hero,
