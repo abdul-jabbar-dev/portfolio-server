@@ -30,7 +30,7 @@ export const documents = pgTable("documents", {
 // Social Links (Generic)
 export const socialLink = pgTable("social_link", {
   id: serial("id").primaryKey(),
-  title: text("title").notNull().unique(),
+  title: text("title").notNull(),
   section: text("section").notNull(),
   desc: text("desc"),
   url: text("url").notNull(),
