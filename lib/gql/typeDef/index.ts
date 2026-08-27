@@ -203,6 +203,8 @@ const typeDefs = gql`
       description: String!
       image: String!
     ): HeroSection
+
+    
     setResume(resume: String!): HeroSection
     setLinks(links: [SocialLinkInput!]!): [SocialLink]!
     setTechStack(techStack: [TechStackInput!]!): [TechStack]!

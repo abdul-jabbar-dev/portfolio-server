@@ -12,13 +12,28 @@ const GraphQLService = await applyGraphQL({
   path: path.ROOT.GQL,
   typeDefs,
   resolvers,
-  context: async (req) => {
+  context: async (req: any) => {
     try {
-      const token = req?.request?.headers?.get("Authorization");
-      // console.log(req);
+      const cookieHeader = req?.request?.headers?.get("Cookie");
+      console.log("Cookie header received:", cookieHeader);
+
+      let token = null;
+      if (cookieHeader) {
+        const match = cookieHeader.match(/token=([^;]+)/);
+        if (match) {
+          token = match[1];
+        }
+      }
+
+      if (!token) {
+        const authHeader = req?.request?.headers?.get("Authorization");
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+          token = authHeader.split("Bearer ")[1];
+        }
+      }
+
       if (token) {
-        const tokenValue = token.split("Bearer ")[1];
-        const user = await verifyJWT(tokenValue);
+        const user = await verifyJWT(token);
         if (!user) return { error: "Invalid or expired token" };
 
         return { user }; // verified user

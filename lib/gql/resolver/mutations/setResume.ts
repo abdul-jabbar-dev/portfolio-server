@@ -2,7 +2,14 @@ import { eq } from "drizzle-orm";
 import db from "../../../../db/index.ts";
 import { heroSection } from "../../../../drizzle/schema.ts";
 
-export const setResume = async (_: any, args: { resume: string }) => {
+export const setResume = async (
+  _: any,
+  args: { resume: string },
+  context: any
+) => {
+  if (!context?.user) {
+    throw new Error("Unauthorized! You must be logged in.");
+  }
   try {
     const existing = await db.select().from(heroSection);
     // update existing row

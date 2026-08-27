@@ -4,8 +4,13 @@ import { heroSection } from "../../../../drizzle/schema.ts";
 
 export const setHeroSection = async (
   _: any,
-  args: { title: string; description: string; image: string }
+  args: { title: string; description: string; image: string },
+  context: any
 ) => {
+  if (!context?.user) {
+    throw new Error("Unauthorized! You must be logged in.");
+  }
+
   try {
     const existing = await db.select().from(heroSection);
     if (existing.length > 0) {

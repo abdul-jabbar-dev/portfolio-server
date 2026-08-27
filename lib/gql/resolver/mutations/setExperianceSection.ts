@@ -4,26 +4,36 @@ import { experienceSection } from "../../../../drizzle/schema.ts";
 export const setExperianceSection = async (
   _: any,
   args: {
-    jobPosition: string;
-    companyName: string;
-    desc: string;
-    startDate: string;
-    endDate: string;
-    companyLink: string;
-    order: number;
-  }
+    experianceSection: {
+      jobPosition: string;
+      companyName: string;
+      desc: string;
+      location: string;
+      startDate: string;
+      endDate: string;
+      companyLink: string;
+      order: number;
+    }
+  },
+  context: any
 ) => {
+  if (!context?.user) {
+    throw new Error("Unauthorized! You must be logged in.");
+  }
+
   try {
+    const input = args.experianceSection;
     const [inserted] = await db
       .insert(experienceSection)
       .values({
-        jobPosition: args.jobPosition,
-        companyName: args.companyName,
-        desc: args.desc,
-        startDate: args.startDate,
-        endDate: args.endDate,
-        companyLink: args.companyLink,
-        order: args.order,
+        jobPosition: input.jobPosition,
+        companyName: input.companyName,
+        location: input.location,
+        desc: input.desc,
+        startDate: input.startDate,
+        endDate: input.endDate,
+        companyLink: input.companyLink,
+        order: input.order,
       })
       .returning();
     return inserted;

@@ -25,6 +25,7 @@ async function login(
     const isValid = await comparePassword(credential, adminUser.passwordHash);
 
     if (!isValid) throw new Error("Invalid password");
+ 
     tokenData = {
       type: adminUser.type,
       email: adminUser.email,

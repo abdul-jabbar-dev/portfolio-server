@@ -15,8 +15,13 @@ export const setTechStack = async (
       desc: string;
       url: string;
     }[];
-  }
+  },
+  context: any
 ) => {
+  if (!context?.user) {
+    throw new Error("Unauthorized! You must be logged in.");
+  }
+
   try {
     const hero = await db.select().from(heroSection).limit(1);
     if (!hero[0]) {
