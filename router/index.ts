@@ -3,6 +3,12 @@ import GraphQLService from "../lib/gql/index.ts";
 
 const router = new Router();
 
+// Health check endpoint for Deno Deploy
+router.get("/", (ctx) => {
+  ctx.response.status = 200;
+  ctx.response.body = "OK";
+});
+
 router.use(async (ctx, next) => {
   
   const cookieHeader = ctx.request.headers.get("cookie") || "";
