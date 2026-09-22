@@ -18,5 +18,9 @@
     "drizzle-orm": "npm:drizzle-orm@^0.44.5",
     "pg": "npm:pg@^8.16.3"
     
+  },
+  "deploy": {
+    "org": "abdul-jabbar-dev",
+    "app": "portfolio-api"
   }
 }
