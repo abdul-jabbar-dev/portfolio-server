@@ -12,6 +12,7 @@ if (!databaseUrl) {
 const db = drizzle({
   client: new Pool({
     connectionString: databaseUrl,
+    ssl: true,
   }),
   schema: {
     heroSection: heroSection,
