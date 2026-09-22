@@ -1,6 +1,12 @@
 import { gql } from "https://deno.land/x/graphql_tag@0.0.1/mod.ts";
 
 const typeDefs = gql`
+  type Document {
+    id: ID!
+    title: String!
+    fileUrl: String!
+  }
+
   type HeroSection {
     id: ID!
     title: String!
@@ -38,6 +44,16 @@ const typeDefs = gql`
   }
 
   type ContactSection {
+    id: ID
+    icon: String!
+    iconStr: String
+    title: String!
+    desc: String!
+    link: String
+    order: Int!
+  }
+
+  input ContactSectionInput {
     id: ID
     icon: String!
     iconStr: String
@@ -102,13 +118,21 @@ const typeDefs = gql`
     order: Int!
   }
 
+  input TechnicalSkillItemInput {
+    techStackId: ID!
+    order: Int!
+    skillsPercentage: Int!
+  }
+
   input TechnicalSkillsSectionInput {
-    icon: String!
+    id: ID
+    icon: String
     iconStr: String
     fieldName: String!
     desc: String!
     link: String
     order: Int!
+    techStack: [TechnicalSkillItemInput!]
   }
   type ProjectTechStack {
     title: String!
@@ -127,9 +151,11 @@ const typeDefs = gql`
     img: String!
     projectTools: [String!]
     techStack: [ProjectTechStack!]
+    order: Int
   }
 
   input ExperienceSectionInput {
+    id: ID
     companyName: String!
     desc: String
     location: String!
@@ -193,6 +219,18 @@ const typeDefs = gql`
     technicalSkills: [TechnicalSkillsSection]
     projects: [ProjectsSectionInput]
     footerLinks: [TechStack]
+    documents: [Document]
+  }
+
+  input ProjectMutationInput {
+    id: ID
+    title: String!
+    section: String
+    desc: String!
+    img: String!
+    projectTools: [String!]
+    techStackIds: [ID!]
+    order: Int
   }
 
   type Mutation {
@@ -203,6 +241,8 @@ const typeDefs = gql`
       description: String!
       image: String!
     ): HeroSection
+
+    
     setResume(resume: String!): HeroSection
     setLinks(links: [SocialLinkInput!]!): [SocialLink]!
     setTechStack(techStack: [TechStackInput!]!): [TechStack]!
@@ -210,6 +250,13 @@ const typeDefs = gql`
     setExperianceSection(
       experianceSection: ExperienceSectionInput!
     ): ExperienceSection
+    setProject(project: ProjectMutationInput!): ProjectsSectionInput
+    deleteExperience(id: ID!): Boolean
+    deleteProject(id: ID!): Boolean
+    setContactSection(contactSection: ContactSectionInput!): ContactSection
+    deleteContactSection(id: ID!): Boolean
+    setTechnicalSkillsSection(technicalSkillsSection: TechnicalSkillsSectionInput!): TechnicalSkillsSection
+    deleteTechnicalSkillsSection(id: ID!): Boolean
   }
 `;
 

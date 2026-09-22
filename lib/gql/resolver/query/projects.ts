@@ -9,6 +9,8 @@ type ProjectWithTechStack = typeof projects.$inferSelect & {
 export const projectsQuery = async (): Promise<ProjectWithTechStack[]> => {
   // 1️⃣ Projects data আনো
   const getProjects = await db.select().from(projects);
+  // Sort projects by order ascending, fallback to id if order is null or 0
+  getProjects.sort((a, b) => (a.order || a.id) - (b.order || b.id));
 
   if (!getProjects || !getProjects.length) {
     throw new Error("❌ No project data found!");

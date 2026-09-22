@@ -12,7 +12,7 @@ const path = {
 export const ENV = {
   DATABASE_URL: Deno.env.get("DATABASE_URL") || "DATABASE_URL not set",
   SALT: Deno.env.get("SALT") || "15",
-  JWT_SECRET: Deno.env.get("JWT_SECRET")
+  JWT_SECRET: Deno.env.get("JWT_SECRET") || "abduljabbardeveloper"
 };
 
 export const DATABASE_URL = Deno.env.get("DATABASE_URL")

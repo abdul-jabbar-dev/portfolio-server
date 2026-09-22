@@ -57,6 +57,7 @@ export const projects = pgTable("projects", {
   section: text("section").notNull(),
   desc: text("desc").notNull(),
   projectTools: text("project_tools").array().default([]),
+  order: integer("order").default(0),
 });
 
 // Junction Table: Hero ↔ SocialLink
