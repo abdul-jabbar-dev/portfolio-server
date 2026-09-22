@@ -1,0 +1,1 @@
+ALTER TABLE "technical_skills_tech_stack" DROP CONSTRAINT "technical_skills_tech_stack_order_unique";

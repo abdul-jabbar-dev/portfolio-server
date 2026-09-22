@@ -1,0 +1,1 @@
+ALTER TABLE "projects" ADD COLUMN "img" text NOT NULL;
