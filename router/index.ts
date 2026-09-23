@@ -10,9 +10,27 @@ router.get("/", (ctx) => {
 });
 
 router.use(async (ctx, next) => {
-  
   const cookieHeader = ctx.request.headers.get("cookie") || "";
   ctx.state.cookieHeader = cookieHeader;
+
+  // Monkey patch for oak_graphql which expects request.body to be a function
+  const originalBody = ctx.request.body;
+  if (typeof originalBody !== "function") {
+    Object.defineProperty(ctx.request, 'body', {
+      value: function(opts: any) {
+        return {
+          get value() {
+            // Check if it's Oak v13+ where body has a json() function
+            if (typeof (originalBody as any)?.json === "function") {
+              return (originalBody as any).json().catch(() => null);
+            }
+            return Promise.resolve(null);
+          }
+        };
+      },
+      configurable: true
+    });
+  }
  
   if (ctx.request.hasBody) {
     const contentType = ctx.request.headers.get("content-type") || "";
