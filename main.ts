@@ -28,8 +28,7 @@ console.log(`Server starting on port ${port}`);
 Deno.serve(
   { port },
   async (req, info) => {
-    console.log(`${req.method} ${new URL(req.url).pathname}`);
-
-    return await app.handle(req, info.remoteAddr);
+    const response = await app.handle(req, info.remoteAddr);
+    return response ?? new Response("No response", { status: 500 });
   },
 );

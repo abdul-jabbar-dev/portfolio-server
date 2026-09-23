@@ -3,14 +3,23 @@
   "specifiers": {
     "jsr:@db/postgres@*": "0.19.5",
     "jsr:@deno/installer-shell-setup@*": "0.3.4",
+    "jsr:@oak/commons@1": "1.0.1",
+    "jsr:@oak/oak@*": "17.2.0",
     "jsr:@std/assert@1": "1.0.15",
+    "jsr:@std/bytes@1": "1.0.6",
     "jsr:@std/bytes@^1.0.5": "1.0.6",
+    "jsr:@std/crypto@1": "1.0.5",
     "jsr:@std/crypto@^1.0.4": "1.0.5",
+    "jsr:@std/encoding@1": "1.0.10",
+    "jsr:@std/encoding@^1.0.10": "1.0.10",
     "jsr:@std/encoding@^1.0.9": "1.0.10",
     "jsr:@std/fmt@^1.0.6": "1.0.8",
     "jsr:@std/http@*": "1.0.20",
+    "jsr:@std/http@1": "1.0.20",
     "jsr:@std/internal@^1.0.10": "1.0.12",
     "jsr:@std/internal@^1.0.12": "1.0.12",
+    "jsr:@std/media-types@1": "1.1.0",
+    "jsr:@std/path@1": "1.1.2",
     "jsr:@std/path@^1.0.8": "1.1.2",
     "npm:@aws-sdk/client-s3@^3.654.0": "3.1136.0",
     "npm:@types/pg@^8.15.5": "8.15.5",
@@ -20,21 +29,45 @@
     "npm:drizzle-orm@~0.44.5": "0.44.6_@types+pg@8.15.5_pg@8.16.3",
     "npm:graphql-request@*": "7.4.0_graphql@17.0.2",
     "npm:jose@5.9.6": "5.9.6",
+    "npm:path-to-regexp@^6.3.0": "6.3.0",
     "npm:pg@^8.16.3": "8.16.3"
   },
   "jsr": {
     "@db/postgres@0.19.5": {
       "integrity": "afdbe608bd066cda2ee5dba37c416d332098b9238c51aec223331108e281954c",
       "dependencies": [
-        "jsr:@std/bytes",
-        "jsr:@std/crypto",
-        "jsr:@std/encoding",
+        "jsr:@std/bytes@^1.0.5",
+        "jsr:@std/crypto@^1.0.4",
+        "jsr:@std/encoding@^1.0.9",
         "jsr:@std/fmt",
-        "jsr:@std/path"
+        "jsr:@std/path@^1.0.8"
       ]
     },
     "@deno/installer-shell-setup@0.3.4": {
       "integrity": "48665d1a737d487cce6874bc97bba70a5aeffa7053aca3f60df93c6fab8963b4"
+    },
+    "@oak/commons@1.0.1": {
+      "integrity": "889ff210f0b4292591721be07244ecb1b5c118742f5273c70cf30d7cd4184d0c",
+      "dependencies": [
+        "jsr:@std/assert",
+        "jsr:@std/bytes@1",
+        "jsr:@std/crypto@1",
+        "jsr:@std/encoding@1",
+        "jsr:@std/http@1",
+        "jsr:@std/media-types"
+      ]
+    },
+    "@oak/oak@17.2.0": {
+      "integrity": "938537a92fc7922a46a9984696c65fb189c9baad164416ac3e336768a9ff0cd1",
+      "dependencies": [
+        "jsr:@oak/commons",
+        "jsr:@std/assert",
+        "jsr:@std/bytes@1",
+        "jsr:@std/http@1",
+        "jsr:@std/media-types",
+        "jsr:@std/path@1",
+        "npm:path-to-regexp"
+      ]
     },
     "@std/assert@1.0.15": {
       "integrity": "d64018e951dbdfab9777335ecdb000c0b4e3df036984083be219ce5941e4703b",
@@ -55,13 +88,19 @@
       "integrity": "71e1fc498787e4434d213647a6e43e794af4fd393ef8f52062246e06f7e372b7"
     },
     "@std/http@1.0.20": {
-      "integrity": "b5cc33fc001bccce65ed4c51815668c9891c69ccd908295997e983d8f56070a1"
+      "integrity": "b5cc33fc001bccce65ed4c51815668c9891c69ccd908295997e983d8f56070a1",
+      "dependencies": [
+        "jsr:@std/encoding@^1.0.10"
+      ]
     },
     "@std/internal@1.0.10": {
       "integrity": "e3be62ce42cab0e177c27698e5d9800122f67b766a0bea6ca4867886cbde8cf7"
     },
     "@std/internal@1.0.12": {
       "integrity": "972a634fd5bc34b242024402972cd5143eac68d8dffaca5eaa4dba30ce17b027"
+    },
+    "@std/media-types@1.1.0": {
+      "integrity": "c9d093f0c05c3512932b330e3cc1fe1d627b301db33a4c2c2185c02471d6eaa4"
     },
     "@std/path@1.1.2": {
       "integrity": "c0b13b97dfe06546d5e16bf3966b1cadf92e1cc83e56ba5476ad8b498d9e3038",
@@ -719,6 +758,9 @@
     "ms@2.1.3": {
       "integrity": "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="
     },
+    "path-to-regexp@6.3.0": {
+      "integrity": "sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ=="
+    },
     "pg-cloudflare@1.2.7": {
       "integrity": "sha512-YgCtzMH0ptvZJslLM1ffsY4EuGaU0cx4XSdXLRFae8bPP4dS5xL1tNB3k2o/N64cHJpwU7dxKli/nZ2lUa5fLg=="
     },
@@ -1332,6 +1374,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@oak/oak@*",
       "jsr:@std/assert@1",
       "npm:@aws-sdk/client-s3@^3.654.0",
       "npm:@types/pg@^8.15.5",
