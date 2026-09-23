@@ -1,20 +1,19 @@
-const req = {
-  get body() {
-    return { json: () => Promise.resolve({ success: true }) };
+import { Router, Application } from "jsr:@oak/oak";
+const app = new Application();
+const router = new Router();
+router.use(async (ctx, next) => {
+  try {
+    const originalRequest = ctx.request;
+    const fakeRequest = Object.create(originalRequest);
+    fakeRequest.body = function() { return { value: Promise.resolve({ query: "fake" }) }; };
+    Object.defineProperty(ctx, "request", {
+      get() { return fakeRequest; }
+    });
+    console.log(typeof ctx.request.body);
+  } catch(e) {
+    console.log("Error:", e);
   }
-};
-
-const originalBody = req.body;
-Object.defineProperty(req, 'body', {
-  value: function(opts: any) {
-    return {
-      get value() {
-        return originalBody.json();
-      }
-    };
-  }
+  ctx.response.body = "OK";
 });
-
-// simulate oak_graphql
-const bodyRes = req.body({ type: 'json' });
-bodyRes.value.then(console.log);
+app.use(router.routes());
+console.log("OK");

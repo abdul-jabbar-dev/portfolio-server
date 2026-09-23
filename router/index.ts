@@ -13,24 +13,24 @@ router.use(async (ctx, next) => {
   const cookieHeader = ctx.request.headers.get("cookie") || "";
   ctx.state.cookieHeader = cookieHeader;
 
-  // Monkey patch for oak_graphql which expects request.body to be a function
-  const originalBody = ctx.request.body;
-  if (typeof originalBody !== "function") {
-    Object.defineProperty(ctx.request, 'body', {
-      value: function(opts: any) {
-        return {
-          get value() {
-            // Check if it's Oak v13+ where body has a json() function
-            if (typeof (originalBody as any)?.json === "function") {
-              return (originalBody as any).json().catch(() => null);
-            }
-            return Promise.resolve(null);
-          }
+  // Monkey patch for oak_graphql using Proxy to safely override ctx.request
+  const originalRequest = ctx.request;
+  const proxyRequest = new Proxy(originalRequest, {
+    get(target, prop, receiver) {
+      if (prop === "body") {
+        return function(opts?: any) {
+          return { value: Promise.resolve(ctx.state.body) };
         };
-      },
-      configurable: true
-    });
-  }
+      }
+      const value = Reflect.get(target, prop, receiver);
+      return typeof value === "function" ? value.bind(target) : value;
+    }
+  });
+
+  Object.defineProperty(ctx, "request", {
+    get() { return proxyRequest; },
+    configurable: true
+  });
  
   if (ctx.request.hasBody) {
     const contentType = ctx.request.headers.get("content-type") || "";
@@ -48,7 +48,14 @@ router.use(async (ctx, next) => {
  
   await next();
 });
+router.use(async (ctx, next) => {
+  console.log("METHOD:", ctx.request.method);
+  console.log("URL:", ctx.request.url);
+  console.log("BODY TYPE:", typeof ctx.request.body);
+  console.log("HAS BODY:", ctx.request.hasBody);
 
+  await next();
+});
 router.post("/upload", async (ctx) => {
   try {
     const body = ctx.request.body({ type: "form-data" });
