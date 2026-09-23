@@ -1,4 +1,3 @@
-import { ResolversProps } from "https://deno.land/x/oak_graphql@0.6.4/mod.ts";
 import { setHeroSection } from "./mutations/setHeroSection.ts";
 import { heroQuery } from "./query/hero.ts";
 import { setResume } from "./mutations/setResume.ts";
@@ -23,7 +22,7 @@ import { deleteContactSection } from "./mutations/deleteContactSection.ts";
 import { setTechnicalSkillsSection } from "./mutations/setTechnicalSkillsSection.ts";
 import { deleteTechnicalSkillsSection } from "./mutations/deleteTechnicalSkillsSection.ts";
 
-const resolvers: ResolversProps = {
+const resolvers: any = {
   Query: {
     hero: heroQuery,
     about: aboutQuery,

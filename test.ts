@@ -1,2 +1,1 @@
-import { Application } from "jsr:@oak/oak";
-console.log(new Application());
+console.log(new URL("https://pyoaowwarxwvraghsvpz.supabase.co/functions/v1/gql").pathname);

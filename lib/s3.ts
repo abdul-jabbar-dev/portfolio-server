@@ -5,8 +5,8 @@ export const s3Client = new S3Client({
   region: "ap-southeast-1",
   endpoint: "https://pyoaowwarxwvraghsvpz.storage.supabase.co/storage/v1/s3",
   credentials: {
-    accessKeyId: "0989ec2e9f7903c64be18186da5863dc",
-    secretAccessKey: "8d67d7d973475fcd52f47a3b5e1bec0b0697ad7a6658bd9450fed6b9db253c19",
+    accessKeyId: Deno.env.get("AWS_ACCESS_KEY_ID") || "",
+    secretAccessKey: Deno.env.get("AWS_SECRET_ACCESS_KEY") || "",
   },
 });
 

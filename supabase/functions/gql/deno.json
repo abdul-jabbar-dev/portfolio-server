@@ -1,4 +1,15 @@
 {
+  "imports": {
+    "@supabase/functions-js": "jsr:@supabase/functions-js@^2",
+    "@supabase/server": "npm:@supabase/server@^1",
+    "@aws-sdk/client-s3": "npm:@aws-sdk/client-s3@^3.654.0",
+    "@oak/oak": "jsr:@oak/oak",
+    "@std/assert": "jsr:@std/assert@1",
+    "@types/pg": "npm:@types/pg@^8.15.5",
+    "drizzle-kit": "npm:drizzle-kit@^0.31.4",
+    "drizzle-orm": "npm:drizzle-orm@^0.44.5",
+    "pg": "npm:pg@^8.16.3"
+  },
   "tasks": {
     "dev": "deno run -A --watch main.ts",
     "db:push": "deno --env -A --node-modules-dir npm:drizzle-kit push",
@@ -9,19 +20,8 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push"
   },
-  "imports": {
-    "@aws-sdk/client-s3": "npm:@aws-sdk/client-s3@^3.654.0",
-     "@oak/oak": "jsr:@oak/oak",
-    "@std/assert": "jsr:@std/assert@1",
-    "@types/pg": "npm:@types/pg@^8.15.5",
-    "drizzle-kit": "npm:drizzle-kit@^0.31.4",
-    "drizzle-orm": "npm:drizzle-orm@^0.44.5",
-    "pg": "npm:pg@^8.16.3"
-    
-  },
   "deploy": {
     "org": "abdul-jabbar-dev",
     "app": "portfolio-api"
   }
 }
-
