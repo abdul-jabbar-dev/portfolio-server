@@ -45,4 +45,3 @@ const GraphQLService = await applyGraphQL({
   } 
 });
 export default GraphQLService;
-console.log("🚀 Server running on http://localhost:8000/gql");

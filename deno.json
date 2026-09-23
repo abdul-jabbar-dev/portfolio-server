@@ -11,7 +11,7 @@
   },
   "imports": {
     "@aws-sdk/client-s3": "npm:@aws-sdk/client-s3@^3.654.0",
-    "@oak/oak": "https://deno.land/x/oak@v12.6.0/mod.ts",
+     "@oak/oak": "jsr:@oak/oak",
     "@std/assert": "jsr:@std/assert@1",
     "@types/pg": "npm:@types/pg@^8.15.5",
     "drizzle-kit": "npm:drizzle-kit@^0.31.4",
