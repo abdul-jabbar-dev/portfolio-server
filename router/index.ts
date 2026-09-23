@@ -15,6 +15,7 @@ router.use(async (ctx, next) => {
 
   // Monkey patch for oak_graphql which expects request.body to be a function
   const originalBody = ctx.request.body;
+  ctx.state.originalBody = originalBody;
   if (typeof originalBody !== "function") {
     Object.defineProperty(ctx.request, 'body', {
       value: function(opts: any) {
@@ -51,24 +52,21 @@ router.use(async (ctx, next) => {
 
 router.post("/upload", async (ctx) => {
   try {
-    const body = ctx.request.body({ type: "form-data" });
-    const formData = await body.value.read();
+    const originalBody = ctx.state.originalBody || ctx.request.body;
+    const formData = await originalBody.formData();
     
-    if (!formData.files || formData.files.length === 0) {
+    const file = formData.get("file");
+    
+    if (!file || typeof file === "string" || !file.arrayBuffer) {
       ctx.response.status = 400;
       ctx.response.body = { error: "No file uploaded" };
       return;
     }
 
-    const file = formData.files[0];
-    const folder = formData.fields ? formData.fields["folder"] : undefined;
-    let content = file.content;
-    if (!content && file.filename) {
-      // It was written to a temp file on disk
-      content = await Deno.readFile(file.filename);
-    }
+    const folder = formData.get("folder") || "portfolio";
+    const content = new Uint8Array(await file.arrayBuffer());
     
-    if (!content) {
+    if (!content || content.length === 0) {
       ctx.response.status = 400;
       ctx.response.body = { error: "File content is empty" };
       return;
@@ -79,17 +77,17 @@ router.post("/upload", async (ctx) => {
     
     const imageUrl = await uploadImageToS3(
       content, 
-      file.originalName || "upload.png", 
-      file.contentType || "image/png",
+      file.name || "upload.png", 
+      file.type || "image/png",
       "portfolio",
-      folder
+      folder.toString()
     );
 
     const { default: db } = await import("../db/index.ts");
     const { documents } = await import("../drizzle/schema.ts");
 
     await db.insert(documents).values({
-      title: file.originalName || "upload",
+      title: file.name || "upload",
       fileUrl: imageUrl,
     });
 

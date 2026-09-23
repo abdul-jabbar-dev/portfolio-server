@@ -10,6 +10,7 @@ app.use(
   oakCors({
     origin: [
       "http://localhost:3000",
+      "http://127.0.0.1:3000",
       "https://abduljabbartech.me",
       "https://abduljabbar.netlify.app",
     ],
@@ -26,7 +27,7 @@ const port = 8000;
 console.log(`Server starting on port ${port}`);
 
 Deno.serve(
-  { port },
+  { port, hostname: "::" },
   async (req, info) => {
     const response = await app.handle(req, info.remoteAddr);
     return response ?? new Response("No response", { status: 500 });
