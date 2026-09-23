@@ -23,7 +23,15 @@ app.use(
 // Database is connected in lib/db/deno.postgres.ts, no need to connect again here.
 
 app.use(router.routes(), router.allowedMethods());
+Deno.serve({ port: 8000 }, (req) => {
+  const url = new URL(req.url);
 
-const port = Number(Deno.env.get("PORT")) || 8000;
-console.log(`Server running on port ${port}`);
-await app.listen({ port });
+  console.log(`${req.method} ${url.pathname}`);
+
+  return new Response("DEPLOYMENT OK", {
+    status: 200,
+    headers: {
+      "content-type": "text/plain",
+    },
+  });
+});
